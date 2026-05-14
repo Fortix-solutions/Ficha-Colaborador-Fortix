@@ -84,7 +84,7 @@
 
   <!-- ⚠️  SUBSTITUA ESTA URL PELO ENDEREÇO DO SEU GOOGLE APPS SCRIPT -->
   <script>
-    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEVSizsNRJKXgNlCL6yJ3f657eKeariEGFI48FyCOtQ2kjCZg5TJ7lqGXJGQQa45VvHw/exec";
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuIpWk-il5aKdgXtpqJgwDJ1E3wkl77EYapJH2zCvjU9gjp-WAHI3QLYnWM-XT9wmKYg/exec";
     var nomeColaboradorGuardado = "";
   </script>
 
@@ -1054,15 +1054,14 @@
       return encodeURIComponent(k) + '=' + encodeURIComponent(dados[k] || '');
     }).join('&');
 
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params
+    var url = SCRIPT_URL + '?' + params;
+
+    fetch(url, {
+      method: 'GET',
+      mode: 'no-cors'
     })
     .then(function() {
-      // no-cors always succeeds silently
-      setTimeout(onSuccess, 500);
+      setTimeout(onSuccess, 800);
     })
     .catch(function() {
       onError();
