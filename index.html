@@ -929,7 +929,7 @@
       return;
     }
 
-    enviarParaScript(dadosColab, function() {
+    enviarFormspree(FORMSPREE_COLAB, dadosColab, function() {
       avancarParaTransicao();
     }, function() {
       loading.style.display = 'none';
@@ -984,7 +984,7 @@
       setTimeout(mostrarSucesso, 600); return;
     }
 
-    enviarParaScript(dadosUpdate, function() {
+    enviarFormspree(FORMSPREE_UPD, dadosUpdate, function() {
       mostrarSucesso();
     }, function() {
       loadingU.style.display = 'none';
@@ -1023,49 +1023,33 @@
       window.scrollTo(0,0);
     }
 
-    if (!SCRIPT_URL || SCRIPT_URL === 'COLE_AQUI_A_URL_DO_APPS_SCRIPT') {
-      setTimeout(finalizarFicha, 600);
-      return;
-    }
-
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify(dadosAdm)
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data.sucesso) {
-        finalizarFicha();
-      } else {
-        loading2.style.display = 'none';
-        btnAdm.disabled = false;
-        erro2.style.display = 'block';
-      }
-    })
-    .catch(function() {
+    enviarFormspree(FORMSPREE_ADM, dadosAdm, finalizarFicha, function() {
       loading2.style.display = 'none';
       btnAdm.disabled = false;
       erro2.style.display = 'block';
     });
   });
 
-  function enviarParaScript(dados, onSuccess, onError) {
-    var params = Object.keys(dados).map(function(k) {
+  var FORMSPREE_COLAB = "https://formspree.io/f/xnjwejzp";
+  var FORMSPREE_ADM   = "https://formspree.io/f/xaqvrqbb";
+  var FORMSPREE_UPD   = "https://formspree.io/f/xdabqadz";
+
+  function enviarFormspree(url, dados, onSuccess, onError) {
+    var body = Object.keys(dados).map(function(k) {
       return encodeURIComponent(k) + '=' + encodeURIComponent(dados[k] || '');
     }).join('&');
 
-    var url = SCRIPT_URL + '?' + params;
-
     fetch(url, {
-      method: 'GET',
-      mode: 'no-cors'
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+      body: body
     })
-    .then(function() {
-      setTimeout(onSuccess, 800);
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.ok) { onSuccess(); }
+      else { onError(); }
     })
-    .catch(function() {
-      onError();
-    });
+    .catch(function() { onError(); });
   }
 
     updateUI();
