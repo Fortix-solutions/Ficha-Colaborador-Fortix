@@ -84,7 +84,7 @@
 
   <!-- ⚠️  SUBSTITUA ESTA URL PELO ENDEREÇO DO SEU GOOGLE APPS SCRIPT -->
   <script>
-    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyruH8URZnV41rAPnZQ9q-pA_gW0eQHpp64EvI3ZIwbf7HLLtQOdKs2B-QL2-uZiYUA/exec";
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziYtpiqezhIwD5XyuKCPkveeOkhdJnbpoJ6D78c9zZaaokFzLEIHgl_FNvuvOZ2kxeTQ/exec";
     var nomeColaboradorGuardado = "";
   </script>
 
@@ -647,6 +647,11 @@
             <input type="number" id="salarioBase" placeholder="Ex: 1200" min="0" />
           </div>
           <div class="field">
+            <label class="lbl" for="precoHH">Preço H.H (€/hora)</label>
+            <input type="number" id="precoHH" placeholder="Ex: 18.50" min="0" step="0.01" />
+            <span class="helper">Valor hora faturado ao cliente</span>
+          </div>
+          <div class="field">
             <label class="lbl" for="categoriaProf">Categoria profissional</label>
             <input type="text" id="categoriaProf" placeholder="Ex: Técnico de nível 3" />
           </div>
@@ -1006,6 +1011,7 @@
       nomeColaborador: nomeColaboradorGuardado || (nomeAdmField ? nomeAdmField.value : ''),
       nif: (window._nifPreenchido || ''),
       funcao: val('funcao'), departamento: val('departamento'),
+      precoHH: val('precoHH'),
       dataAdmissao: val('dataAdmissao'), tipoContrato: val('tipoContrato'),
       horario: val('horario'), salarioBase: val('salarioBase'),
       categoriaProf: val('categoriaProf'), numColaborador: val('numColaborador'),
