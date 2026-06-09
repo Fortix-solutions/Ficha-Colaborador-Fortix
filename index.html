@@ -926,22 +926,81 @@
     btnSub.disabled       = true;
 
     function avancarParaTransicao() {
-      // Directly update Supabase ficha_pendente=true from browser
       var nifColab = dadosColab.nif || val('nif') || '';
+      var SB_URL = 'https://wbriqlcqfgnpjbxesmdc.supabase.co';
+      var SB_KEY = 'sb_publishable_T2GYe2-5dVrXLWZasUzPZQ_DnS7k-27';
+      var headers = {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      };
+
       if (nifColab) {
-        var SB_URL = 'https://wbriqlcqfgnpjbxesmdc.supabase.co';
-        var SB_KEY = 'sb_publishable_T2GYe2-5dVrXLWZasUzPZQ_DnS7k-27';
+        // 1. Set ficha_pendente=true
         fetch(SB_URL + '/rest/v1/colaboradores?nif=eq.' + encodeURIComponent(nifColab), {
-          method: 'PATCH',
-          headers: {
-            'apikey': SB_KEY,
-            'Authorization': 'Bearer ' + SB_KEY,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
-          },
+          method: 'PATCH', headers: headers,
           body: JSON.stringify({ ficha_pendente: true })
         }).catch(function(){});
+
+        // 2. Get colaborador_id then save ficha
+        fetch(SB_URL + '/rest/v1/colaboradores?nif=eq.' + encodeURIComponent(nifColab) + '&select=id', {
+          headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+        })
+        .then(function(r){ return r.json(); })
+        .then(function(data) {
+          if (!data || !data.length) return;
+          var cid = data[0].id;
+          var fichaPayload = {
+            colaborador_id: cid,
+            nif: dadosColab.nif || '',
+            niss: dadosColab.niss || '',
+            tipo_doc: dadosColab.tipoDoc || '',
+            num_doc: dadosColab.numDoc || '',
+            validade_doc: dadosColab.validadeDoc || '',
+            nacionalidade: dadosColab.nacionalidade || '',
+            genero: dadosColab.genero || '',
+            data_nasc: dadosColab.dataNasc || '',
+            morada: dadosColab.morada || '',
+            cod_postal: dadosColab.codPostal || '',
+            localidade: dadosColab.localidade || '',
+            telemovel: dadosColab.telemovel || '',
+            email_pessoal: dadosColab.emailPessoal || '',
+            contacto_emerg: dadosColab.contactoEmerg || '',
+            iban: dadosColab.iban || '',
+            swift: dadosColab.swift || '',
+            banco: dadosColab.banco || '',
+            irs: dadosColab.irs || '',
+            estado_civil: dadosColab.estadoCivil || '',
+            tem_dep: dadosColab.temDep || '',
+            num_dep: dadosColab.numDep || '',
+            idades_dep: dadosColab.idadesDep || '',
+            tem_def: dadosColab.temDef || '',
+            grau_def: dadosColab.grauDef || '',
+            grau_escolar: dadosColab.grauEscolar || '',
+            num_bota: dadosColab.numBota || '',
+            num_fato: dadosColab.numFato || '',
+            atualizado_em: new Date().toISOString()
+          };
+          // Check if ficha exists - upsert
+          fetch(SB_URL + '/rest/v1/fichas?colaborador_id=eq.' + cid, {
+            headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+          })
+          .then(function(r){ return r.json(); })
+          .then(function(existing) {
+            var method = (existing && existing.length > 0) ? 'PATCH' : 'POST';
+            var url = method === 'PATCH'
+              ? SB_URL + '/rest/v1/fichas?colaborador_id=eq.' + cid
+              : SB_URL + '/rest/v1/fichas';
+            fetch(url, {
+              method: method,
+              headers: Object.assign({}, headers, { 'Prefer': method === 'POST' ? 'return=representation' : 'return=minimal' }),
+              body: JSON.stringify(fichaPayload)
+            }).catch(function(){});
+          }).catch(function(){});
+        }).catch(function(){});
       }
+
       loading.style.display = 'none';
       btnSub.disabled = false;
       document.getElementById('phaseColab').classList.add('hidden');
