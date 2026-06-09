@@ -84,7 +84,7 @@
 
   <!-- ⚠️  SUBSTITUA ESTA URL PELO ENDEREÇO DO SEU GOOGLE APPS SCRIPT -->
   <script>
-    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx_aU40JnIw1s6Ln7R2Lpr5Oq1C3W0HInUlHSWIDqLCetPEFjYCkE6r0TbZkNEtFcjnpw/exec";
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycby32tBi5JXd_K2fOLnxeyny9ZcVEnzxxLYO7fvjVUAVi6oO-2n5t4xicA7_Ol-nihdQTA/exec";
     var nomeColaboradorGuardado = "";
   </script>
 
@@ -998,6 +998,7 @@
     dadosAdm = {
       fase: 'administracao',
       nomeColaborador: nomeColaboradorGuardado,
+      nif: (window._nifPreenchido || ''),
       funcao: val('funcao'), departamento: val('departamento'),
       dataAdmissao: val('dataAdmissao'), tipoContrato: val('tipoContrato'),
       horario: val('horario'), salarioBase: val('salarioBase'),
@@ -1046,7 +1047,7 @@
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      if (data.ok) { onSuccess(); }
+      if (data.ok || data.sucesso) { onSuccess(); }
       else { onError(); }
     })
     .catch(function() { onError(); });
