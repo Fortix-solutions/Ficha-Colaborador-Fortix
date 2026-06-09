@@ -84,7 +84,7 @@
 
   <!-- ⚠️  SUBSTITUA ESTA URL PELO ENDEREÇO DO SEU GOOGLE APPS SCRIPT -->
   <script>
-    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziYtpiqezhIwD5XyuKCPkveeOkhdJnbpoJ6D78c9zZaaokFzLEIHgl_FNvuvOZ2kxeTQ/exec";
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyEgax54won2Xv4FBes0epvk0qBQ2Ef0LnxsO4bAzi46TVvYZqwVm4FFy9lQT_9jZSveQ/exec";
     var nomeColaboradorGuardado = "";
   </script>
 
@@ -1209,8 +1209,10 @@
         '<div class="pdf-grid">' +
           campo('Deficiência', d.tem_def || d.temDef) +
           campo('Grau de incapacidade', d.grau_def || d.grauDef) +
+          campo('Tipo deficiência', d.tipoDef) +
           campo('Escolaridade', d.grau_escolar || d.grauEscolar) +
           campo('Área de formação', d.area_curso || d.areaCurso) +
+          campo('Instituição', d.instituicao) +
         '</div>' +
       '</div>' +
 
@@ -1226,12 +1228,13 @@
       html += '<div class="pdf-section">' +
         '<div class="pdf-section-title adm">Dados profissionais</div>' +
         '<div class="pdf-grid">' +
-          campo('Cargo', f.cargo || adm.funcao) +
+          campo('Cargo / Função', f.cargo || adm.funcao) +
           campo('Departamento', f.departamento || adm.departamento) +
           campo('Data de admissão', f.data_admissao || adm.dataAdmissao) +
           campo('Tipo de contrato', adm.tipoContrato) +
           campo('Horário', adm.horario) +
           campo('Salário base', adm.salarioBase ? adm.salarioBase + ' €' : '') +
+          campo('Preço H.H', adm.precoHH ? adm.precoHH + ' €/hora' : '') +
           campo('Categoria profissional', adm.categoriaProf) +
           campo('N.º colaborador', adm.numColaborador) +
           campoFull('Notas internas', adm.notasAdm) +
